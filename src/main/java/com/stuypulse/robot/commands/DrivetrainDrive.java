@@ -14,7 +14,8 @@ public class DrivetrainDrive extends CommandBase {
 	}
 
 	public void execute() {
-		// h
+		// just drive forwards
+		drivetrain.arcadeDrive(1, 0);
 	}
 
 	public boolean isFinished() {

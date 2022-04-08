@@ -11,6 +11,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,16 +32,19 @@ public class Drivetrain extends SubsystemBase {
     // Encoders 
     private final Encoder leftEncoder, rightEncoder;
 
-    // pov computer plate
+    // Gyro
 	private final AnalogGyro gyro;
 	
 	// Motors
     private final CANSparkMax[] leftMotors;
     private final CANSparkMax[] rightMotors;
 
-	// Odometry kk
+	// Odometry
 	private final DifferentialDriveOdometry odometry;
 	private final Field2d field;
+
+	// Drivetrain
+	private final DifferentialDrive drivetrain;
 
 	// Simulation
     private EncoderSim leftEncoderSim, rightEncoderSim;
@@ -61,6 +66,12 @@ public class Drivetrain extends SubsystemBase {
 				new CANSparkMax(-1, MotorType.kBrushless),
 				new CANSparkMax(-1, MotorType.kBrushless)
 			};
+		
+		// Create Differential Drive
+		drivetrain =
+			new DifferentialDrive(
+				new MotorControllerGroup(leftMotors),
+				new MotorControllerGroup(rightMotors));
 
         // Create Drivetrain Sim (skull emoji)
         drivetrainSim = new DifferentialDrivetrainSim(
@@ -125,6 +136,22 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
+	// Driving Commands
+
+	public void stop() {
+		drivetrain.stopMotor();
+	}
+
+	public void tankDrive(double left, double right) {
+		drivetrain.tankDrive(left, right, false);
+	}
+
+	public void arcadeDrive(double speed, double rotation) {
+		drivetrain.arcadeDrive(speed, rotation, false);
+	}
+
+	// Periodic Functions
+
 	@Override 
 	public void simulationPeriodic() {
 		drivetrainSim.setInputs(getLeftMotorSpeed() * RobotController.getInputVoltage(),
@@ -147,6 +174,5 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         updateOdometry();
         field.setRobotPose(odometry.getPoseMeters());
-
 	}
 }
