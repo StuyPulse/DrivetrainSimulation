@@ -12,12 +12,4 @@ public final class Ports {
         int OPERATOR = 1;
         int DEBUGGER = 2;
     }
-    public interface Drivetrain {
-        int LEFT_TOP = -1;
-        int LEFT_MIDDLE = -1;
-        int LEFT_BOTTOM = -1;
-        int RIGHT_TOP = -1;
-        int RIGHT_MIDDLE = -1;
-        int RIGHT_BOTTOM = -1;
-    }
 }
