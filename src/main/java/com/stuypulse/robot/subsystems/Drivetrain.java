@@ -73,7 +73,7 @@ public class Drivetrain extends SubsystemBase {
 				new MotorControllerGroup(leftMotors),
 				new MotorControllerGroup(rightMotors));
 
-        // Create Drivetrain Sim (skull emoji)
+        // Create Drivetrain Sim
         drivetrainSim = new DifferentialDrivetrainSim(
 			LinearSystemId.identifyDrivetrainSystem(Settings.SysID.kV, Settings.SysID.kA, Settings.SysID.kVAngular, Settings.SysID.kAAngular),
 			DCMotor.getNEO(3),       // 2 NEO motors on each side of the drivetrain.
@@ -86,7 +86,7 @@ public class Drivetrain extends SubsystemBase {
 		
 		// Create Encoders
 		leftEncoder = new Encoder(-1, -1); 
-		rightEncoder = new Encoder(-1, -1); // oh in dorcas theyre port constants
+		rightEncoder = new Encoder(-1, -1);
 
 		// Create Encoder Sims
 		leftEncoderSim = new EncoderSim(leftEncoder);
