@@ -57,14 +57,14 @@ public class Drivetrain extends SubsystemBase {
 			new CANSparkMax[] {
 				new CANSparkMax(Ports.Drivetrain.LEFT_TOP, MotorType.kBrushless),
 				new CANSparkMax(Ports.Drivetrain.LEFT_MIDDLE, MotorType.kBrushless),
-				new CANSparkMax(Ports.Drivetrain.LEFT_TOP, MotorType.kBrushless)
+				new CANSparkMax(Ports.Drivetrain.LEFT_BOTTOM, MotorType.kBrushless)
 			};
 
 		rightMotors =
 			new CANSparkMax[] {
-				new CANSparkMax(-1, MotorType.kBrushless),
-				new CANSparkMax(-1, MotorType.kBrushless),
-				new CANSparkMax(-1, MotorType.kBrushless)
+				new CANSparkMax(Ports.Drivetrain.RIGHT_TOP, MotorType.kBrushless),
+				new CANSparkMax(Ports.Drivetrain.RIGHT_MIDDLE, MotorType.kBrushless),
+				new CANSparkMax(Ports.Drivetrain.RIGHT_BOTTOM, MotorType.kBrushless)
 			};
 		
 		// Create Differential Drive
@@ -85,15 +85,15 @@ public class Drivetrain extends SubsystemBase {
 			VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
 		
 		// Create Encoders
-		leftEncoder = new Encoder(-1, -1); 
-		rightEncoder = new Encoder(-1, -1);
+		leftEncoder = new Encoder(Ports.Grayhill.LEFT_A, Ports.Grayhill.LEFT_B); 
+		rightEncoder = new Encoder(Ports.Grayhill.RIGHT_A, Ports.Grayhill.RIGHT_B);
 
 		// Create Encoder Sims
 		leftEncoderSim = new EncoderSim(leftEncoder);
 		rightEncoderSim = new EncoderSim(rightEncoder);
 
         // Create Gyro
-        gyro = new AnalogGyro(-1);
+        gyro = new AnalogGyro(Ports.Gyro.CHANNEL);
 
         // Create Gyro Sim
         gyroSim = new AnalogGyroSim(gyro);

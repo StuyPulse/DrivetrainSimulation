@@ -15,10 +15,14 @@ import com.stuypulse.stuylib.network.SmartNumber;
  * values that we can edit on Shuffleboard.
  */
 public final class Settings {
+	
+    SmartBoolean DEBUG_MODE = new SmartBoolean("Debug Mode", false);
+
 	public interface SysID {
 		double kV = 1.98;
 		double kA = 0.2;
 		double kVAngular = 1.5;
 		double kAAngular = 0.3;
 	}
+	
 }
