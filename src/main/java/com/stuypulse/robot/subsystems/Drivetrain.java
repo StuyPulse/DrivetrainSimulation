@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import pabeles.concurrency.ConcurrencyOps.Reset;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -149,6 +150,45 @@ public class Drivetrain extends SubsystemBase {
 	public void arcadeDrive(double speed, double rotation) {
 		drivetrain.arcadeDrive(speed, rotation, false);
 	}
+
+
+	// Encoder functions
+	public double getRightDistance() {
+		return rightEncoder.getDistance();
+	}
+
+	public double getLeftDistance() {
+		return leftEncoder.getDistance();
+	}
+
+	public double getDistance() {
+		return  (getLeftDistance() + getRightDistance() ) / 2;
+	}
+
+	public void resetRightEncoder() {
+		rightEncoder.reset();
+	}
+
+	public void resetLeftEncoder() {
+		leftEncoder.reset();
+	}
+
+	// Gyro Functions
+	public double getGyroAngle() {
+		return gyro.getAngle();
+	}
+
+	public void resetGyro() {
+		gyro.reset();	
+	}
+
+	// Reset sensors
+	public void resetSensors() {
+		resetLeftEncoder();
+		resetRightEncoder();
+		resetGyro();
+	}
+
 
 	// Periodic Functions
 
