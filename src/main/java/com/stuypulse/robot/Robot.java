@@ -5,7 +5,10 @@
 
 package com.stuypulse.robot;
 
+import com.stuypulse.robot.constants.Settings.PID;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -63,6 +66,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+
     if (auto != null) {
       auto.cancel();
     }

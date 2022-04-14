@@ -6,7 +6,9 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.DrivetrainDrive;
+import com.stuypulse.robot.commands.DrivetrainReset;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
+import com.stuypulse.robot.commands.auton.DriveForwardAuton;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.Drivetrain;
 import com.stuypulse.stuylib.input.Gamepad;
@@ -48,7 +50,10 @@ public class RobotContainer {
   /*** BUTTONS ***/
   /***************/
 
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+
+    driver.getLeftButton().whenPressed(new DrivetrainReset(drivetrain));
+  }
 
   /**************/
   /*** AUTONS ***/
@@ -56,6 +61,7 @@ public class RobotContainer {
 
   public void configureAutons() {
     autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
+    autonChooser.setDefaultOption("DriveForward", new DriveForwardAuton(drivetrain));
 
     SmartDashboard.putData("Autonomous", autonChooser);
   }

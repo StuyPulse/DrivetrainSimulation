@@ -23,6 +23,14 @@ public final class Settings {
 		double kA = 0.2;
 		double kVAngular = 1.5;
 		double kAAngular = 0.3;
+
+		
+	}
+
+	public interface PID {
+		SmartNumber kP = new SmartNumber("kP", 0.0);
+		SmartNumber kI = new SmartNumber("kP", 0.0);
+		SmartNumber kD = new SmartNumber("kD", 0.0);
 	}
 	
 }
