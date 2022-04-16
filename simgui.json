@@ -48,6 +48,9 @@
   },
   "NetworkTables": {
     "SmartDashboard": {
+      "PID": {
+        "open": true
+      },
       "open": true
     }
   },
@@ -70,6 +73,15 @@
                 1.0
               ],
               "id": "Encoder[0,1] Count"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/PID/Error"
             }
           ]
         }
