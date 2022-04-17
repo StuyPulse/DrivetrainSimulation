@@ -1,23 +1,23 @@
 package com.stuypulse.robot.commands;
 
-import com.stuypulse.robot.constants.Settings.PID;
+import com.stuypulse.robot.constants.Settings.BangBang;
 import com.stuypulse.robot.subsystems.Drivetrain;
-import com.stuypulse.stuylib.control.PIDController;
+import com.stuypulse.stuylib.control.BangBangController;
 import com.stuypulse.stuylib.network.SmartNumber;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class DrivetrainDriveDistancePID extends CommandBase {
+public class DrivetrainDriveDistanceBangBang extends CommandBase {
 
-	private PIDController feedback;    
+	private BangBangController feedback;    
 	private Drivetrain drivetrain;
 	private final int distance;
 	private SmartNumber error;
 
-	public DrivetrainDriveDistancePID(Drivetrain drivetrain, int distance) {
+	public DrivetrainDriveDistanceBangBang(Drivetrain drivetrain, int distance) {
 		this.drivetrain = drivetrain;
 		this.distance = distance;
 
-		this.feedback = new PIDController(PID.kP, PID.kI, PID.kD);
+		this.feedback = new BangBangController(BangBang.SPEED.get());
 
 		error = new SmartNumber("Control/Error", 0.0);
 

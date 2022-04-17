@@ -30,5 +30,9 @@ public final class Settings {
 		SmartNumber kI = new SmartNumber("PID/kI", 1.0);
 		SmartNumber kD = new SmartNumber("PID/kD", 0.0);
 	}
+
+	public interface BangBang {
+		SmartNumber SPEED = new SmartNumber("BangBang/Speed", 1.0);
+	}
 	
 }
