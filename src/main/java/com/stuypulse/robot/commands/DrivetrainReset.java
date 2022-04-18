@@ -1,11 +1,10 @@
 package com.stuypulse.robot.commands;
 
 import com.stuypulse.robot.subsystems.Drivetrain;
-import com.stuypulse.stuylib.control.PIDController;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class DrivetrainReset extends CommandBase {
+public class DrivetrainReset extends InstantCommand {
 
 	private Drivetrain drivetrain;
 
@@ -14,7 +13,7 @@ public class DrivetrainReset extends CommandBase {
 	}
 
 	@Override
-	public void execute() {
+	public void initialize() {
 		drivetrain.resetSensors();
 	}
 

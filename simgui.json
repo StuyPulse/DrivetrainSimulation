@@ -40,11 +40,6 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Control/Controller": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
         "window": {
           "visible": true
@@ -93,7 +88,7 @@
                 0.32156863808631897,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/Control/Error"
+              "id": "NT:/SmartDashboard/Error"
             }
           ]
         }
