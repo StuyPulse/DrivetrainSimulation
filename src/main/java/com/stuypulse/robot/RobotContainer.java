@@ -8,6 +8,7 @@ package com.stuypulse.robot;
 import com.stuypulse.robot.commands.DriveDistance;
 import com.stuypulse.robot.commands.DrivetrainDrive;
 import com.stuypulse.robot.commands.DrivetrainReset;
+import com.stuypulse.robot.commands.auton.Balls;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.Drivetrain;
@@ -62,6 +63,7 @@ public class RobotContainer {
     autonChooser.setDefaultOption("PID", new DriveDistance.PID(drivetrain, 10));
     autonChooser.addOption("Do Nothing", new DoNothingAuton());
     autonChooser.addOption("BangBang", new DriveDistance.BangBang(drivetrain, 10));
+    autonChooser.addOption("Balls", new Balls(this));
 
     SmartDashboard.putData("Autonomous", autonChooser);
   }

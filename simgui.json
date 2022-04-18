@@ -10,9 +10,6 @@
         "header": {
           "open": true
         }
-      },
-      "window": {
-        "visible": true
       }
     },
     "Other Devices": {
@@ -41,6 +38,21 @@
         }
       },
       "/SmartDashboard/Field": {
+        "Robot": {
+          "arrows": false,
+          "image": "C:\\Users\\Shaurya Sen\\Pictures\\bonzi monke.png"
+        },
+        "image": "C:\\Users\\Shaurya Sen\\Pictures\\BONZI.png",
+        "traj": {
+          "arrows": false,
+          "color": [
+            1.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "style": "Line"
+        },
         "window": {
           "visible": true
         }
@@ -65,7 +77,7 @@
     "Plot <0>": {
       "plots": [
         {
-          "height": 229,
+          "height": 244,
           "series": [
             {
               "color": [

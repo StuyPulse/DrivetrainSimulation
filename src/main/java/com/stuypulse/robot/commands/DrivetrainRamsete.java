@@ -27,6 +27,7 @@ public class DrivetrainRamsete extends RamseteCommand {
         this.resetPosition = true;
     }
 
+
     // [DEFAULT] Resets the drivetrain to the begining of the trajectory
     public DrivetrainRamsete robotRelative() {
         this.resetPosition = true;
@@ -41,6 +42,9 @@ public class DrivetrainRamsete extends RamseteCommand {
 
     @Override
     public void initialize() {
+        
+        drivetrain.getField().getObject("traj").setTrajectory(traj);
+
         super.initialize();
         if (resetPosition) drivetrain.reset(traj.getInitialPose());
     }
