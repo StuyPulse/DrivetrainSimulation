@@ -92,13 +92,19 @@ public class Drivetrain extends SubsystemBase {
         // Create Drivetrain Sim
         drivetrainSim = new DifferentialDrivetrainSim(
 			LinearSystemId.identifyDrivetrainSystem(Settings.SysID.kV, Settings.SysID.kA, Settings.SysID.kVAngular, Settings.SysID.kAAngular),
-			DCMotor.getNEO(2),       // 2 NEO motors on each side of the drivetrain.
-			7.29,                    // gear ratio
-			Settings.Motion.TRACK_WIDTH,                  // track width
-			Units.inchesToMeters(3), // wheel radius
+			DCMotor.getNEO(3),
+			Settings.Motion.Encoders.GearRatio.Stages.HIGH_GEAR_STAGE,           
+			Settings.Motion.TRACK_WIDTH,                  
+			Settings.Motion.Encoders.WHEEL_RADIUS,
 
-			// measurement noise deviation ???
-			VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
+			// Measurement noise deviation
+			VecBuilder.fill(
+				0.001, 0.001, // x/y
+				0.001,        // heading
+				Settings.Motion.MEASURE_STDEV_LEFT, Settings.Motion.MEASURE_STDEV_RIGHT,     // l/r velocity
+				0.005, 0.005  // l/r position
+			)
+		);
 		
 		// Create Encoders
 		leftEncoder = new Encoder(Ports.Grayhill.LEFT_A, Ports.Grayhill.LEFT_B); 
@@ -107,6 +113,12 @@ public class Drivetrain extends SubsystemBase {
 		// Create Encoder Sims
 		leftEncoderSim = new EncoderSim(leftEncoder);
 		rightEncoderSim = new EncoderSim(rightEncoder);
+		
+		leftEncoder.setDistancePerPulse(Settings.Motion.Encoders.GRAYHILL_DISTANCE_PER_PULSE);
+		rightEncoder.setDistancePerPulse(Settings.Motion.Encoders.GRAYHILL_DISTANCE_PER_PULSE);
+		
+		leftEncoder.reset();
+		rightEncoder.reset();
 
         // Create Gyro
         gyro = new AnalogGyro(Ports.Gyro.CHANNEL);
@@ -132,17 +144,17 @@ public class Drivetrain extends SubsystemBase {
 				Nat.N2(),
 				Nat.N2(),
 				drivetrainPlant,
-				VecBuilder.fill(Settings.StateSpace.STATE_STDEV_LEFT, Settings.StateSpace.STATE_STDEV_RIGHT), 
-				VecBuilder.fill(Settings.StateSpace.MEASURE_STDEV_LEFT, Settings.StateSpace.MEASURE_STDEV_RIGHT), 
-				Settings.StateSpace.DT
+				VecBuilder.fill(Settings.Motion.STATE_STDEV_LEFT, Settings.Motion.STATE_STDEV_RIGHT), 
+				VecBuilder.fill(Settings.Motion.MEASURE_STDEV_LEFT, Settings.Motion.MEASURE_STDEV_RIGHT), 
+				Settings.Motion.DT
 			);
 
 		controller =
 			new LinearQuadraticRegulator<>(
 				drivetrainPlant,
-				VecBuilder.fill(Settings.StateSpace.Q_LEFT, Settings.StateSpace.Q_RIGHT), 
-				VecBuilder.fill(Settings.StateSpace.R_LEFT, Settings.StateSpace.R_RIGHT), 
-				Settings.StateSpace.DT
+				VecBuilder.fill(Settings.Motion.Q_LEFT, Settings.Motion.Q_RIGHT), 
+				VecBuilder.fill(Settings.Motion.R_LEFT, Settings.Motion.R_RIGHT), 
+				Settings.Motion.DT
 			);
 		
 		loop =
@@ -150,8 +162,8 @@ public class Drivetrain extends SubsystemBase {
 				drivetrainPlant, 
 				controller, 
 				observer, 
-				Settings.StateSpace.MAX_VOLTAGE, 
-				Settings.StateSpace.DT
+				Settings.Motion.MAX_VOLTAGE, 
+				Settings.Motion.DT
 			);
 
         // put data on SmartDashboard
@@ -203,12 +215,12 @@ public class Drivetrain extends SubsystemBase {
 	public void tankDriveKalman(double left, double right) {
 		loop.setNextR(VecBuilder.fill(left, right));
 		loop.correct(VecBuilder.fill(getLeftRate(), getRightRate()));
-		loop.predict(Settings.StateSpace.DT);
+		loop.predict(Settings.Motion.DT);
 
 		left = loop.getU(0);
 		right = loop.getU(1);
 
-		drivetrain.tankDrive(left / Settings.StateSpace.MAX_VOLTAGE, right / Settings.StateSpace.MAX_VOLTAGE);
+		drivetrain.tankDrive(left / Settings.Motion.MAX_VOLTAGE, right / Settings.Motion.MAX_VOLTAGE);
 	}
 
 	public void arcadeDrive(double speed, double rotation) {
@@ -322,8 +334,7 @@ public class Drivetrain extends SubsystemBase {
 		drivetrainSim.setInputs(getLeftMotorSpeed() * RobotController.getInputVoltage(),
 								getRightMotorSpeed() * RobotController.getInputVoltage());
 
-		// TODO: replace with a timer
-		drivetrainSim.update(0.02);
+		drivetrainSim.update(Settings.Motion.DT);
 
 		// update sensors
 		leftEncoderSim.setDistance(drivetrainSim.getLeftPositionMeters());

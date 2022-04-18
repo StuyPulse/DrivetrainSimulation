@@ -8,6 +8,8 @@ package com.stuypulse.robot.constants;
 import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
 
+import edu.wpi.first.math.util.Units;
+
 /*-
  * File containing tunable settings for every subsystem on the robot.
  *
@@ -19,10 +21,7 @@ public final class Settings {
     SmartBoolean DEBUG_MODE = new SmartBoolean("Debug Mode", false);
 
 	public interface Motion {
-		double TRACK_WIDTH = 0.7112;
-	}
-
-	public interface StateSpace {
+		double TRACK_WIDTH = Units.inchesToMeters(26.9);
 		// How accurate we think our model is
 		double STATE_STDEV_LEFT = 3.0;
 		double STATE_STDEV_RIGHT = 3.0;
@@ -41,11 +40,46 @@ public final class Settings {
 
 		double MAX_VOLTAGE = 12.0;
 		double DT = 0.020;
+
+		public interface Encoders {
+
+            public interface GearRatio {
+
+                public interface Stages {
+                    double INITIAL_STAGE = (11.0 / 50.0);
+
+                    double HIGH_GEAR_STAGE = (50.0 / 34.0);
+                    double LOW_GEAR_STAGE = (24.0 / 60.0);
+
+                    double GRAYHILL_STAGE = (12.0 / 36.0);
+
+                    double THIRD_STAGE = (34.0 / 50.0);
+
+                    double EXTERNAL_STAGE = (1.0 / 1.0);
+                }
+
+                /** = 0.22666 */
+                double GRAYHILL_TO_WHEEL =
+                        Stages.GRAYHILL_STAGE * Stages.THIRD_STAGE * Stages.EXTERNAL_STAGE;
+            }
+
+            double WHEEL_DIAMETER = Units.inchesToMeters(4);
+			double WHEEL_RADIUS = WHEEL_DIAMETER / 2.0;
+			
+            double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
+
+            double GRAYHILL_PULSES_PER_REVOLUTION = 256;
+            double GRAYHILL_DISTANCE_PER_PULSE =
+                    (WHEEL_CIRCUMFERENCE / GRAYHILL_PULSES_PER_REVOLUTION)
+                            * GearRatio.GRAYHILL_TO_WHEEL;
+
+            boolean GRAYHILL_INVERTED = true;
+        }
 	}
 
 	public interface SysID {
-		double kV = 1.98;
-		double kA = 0.2;
+		double kV = 1.6658;
+		double kA = 0.4515;
 		double kVAngular = 1.5;
 		double kAAngular = 0.3;
 	}
