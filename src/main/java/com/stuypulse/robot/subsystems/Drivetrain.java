@@ -76,9 +76,9 @@ public class Drivetrain extends SubsystemBase {
         // Create Drivetrain Sim
         drivetrainSim = new DifferentialDrivetrainSim(
 			LinearSystemId.identifyDrivetrainSystem(Settings.SysID.kV, Settings.SysID.kA, Settings.SysID.kVAngular, Settings.SysID.kAAngular),
-			DCMotor.getNEO(3),       // 2 NEO motors on each side of the drivetrain.
+			DCMotor.getNEO(2),       // 2 NEO motors on each side of the drivetrain.
 			7.29,                    // gear ratio
-			0.7112,                  // tradk width
+			0.7112,                  // track width
 			Units.inchesToMeters(3), // wheel radius
 
 			// measurement noise deviation ???
@@ -132,8 +132,6 @@ public class Drivetrain extends SubsystemBase {
         odometry.update(gyro.getRotation2d(),
                     leftEncoder.getDistance(),
                     rightEncoder.getDistance());
-
-
     }
 
 	// Driving Commands
@@ -144,6 +142,16 @@ public class Drivetrain extends SubsystemBase {
 
 	public void tankDrive(double left, double right) {
 		drivetrain.tankDrive(left, right, false);
+	}
+
+	public void tankDriveVolts(double leftV, double rightV) {
+		leftMotors[0].setVoltage(leftV);
+		leftMotors[1].setVoltage(leftV);
+		leftMotors[2].setVoltage(leftV);
+
+		rightMotors[0].setVoltage(rightV);
+		rightMotors[1].setVoltage(rightV);
+		rightMotors[2].setVoltage(rightV);
 	}
 
 	public void arcadeDrive(double speed, double rotation) {
@@ -162,6 +170,18 @@ public class Drivetrain extends SubsystemBase {
 
 	public double getDistance() {
 		return  (getLeftDistance() + getRightDistance() ) / 2;
+	}
+
+	public double getRightRate() {
+		return rightEncoder.getRate();
+	}
+
+	public double getLeftRate() {
+		return leftEncoder.getRate();
+	}
+
+	public double getRate() {
+		return (getLeftRate() + getRightRate()) / 2;
 	}
 
 	public void resetRightEncoder() {
