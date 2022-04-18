@@ -229,44 +229,17 @@ public class Drivetrain extends SubsystemBase {
 		speed = SLMath.deadband(speed, 0.05);
 		turn = SLMath.deadband(turn, 0.05);
 
-		// Manual arcade drive implementation WOOZY
-		double biggerInput = 
-			Math.signum(speed) * 
-			Math.max(
-				Math.abs(speed),
-				Math.abs(turn)
-			);
+		double left = speed + turn;
+		double right = speed - turn;
 
-		double left, right;
-
-		if (speed >= 0.0) {
-			if (turn >= 0.0) {
-				left = biggerInput;
-				right = speed - turn;		
-			} else {
-				left = speed + turn;
-				right = biggerInput;
-			}
-		} else {
-			if (turn >= 0) {
-				left = speed + turn;
-				right = biggerInput;
-			} else {
-				left = biggerInput;
-				right = speed - turn;
-			}
-		}
-
-		double mag = Math.max(Math.abs(left), Math.abs(right));
-		if (mag > 1.0) {
-			left /= mag;
-			right /= mag;
-		}
+		double mag = Math.max(1.0, Math.max(Math.abs(left), Math.abs(right)));
+		left /= mag;
+		right /= mag;
 
 		tankDriveKalman(left, right);
 	}
 
-	public void curvatureDrive(double xSpeed, double zRotation, double baseTS) {
+	public void curvatureDriveKalman(double xSpeed, double zRotation, double baseTS) {
         // Clamp all inputs to valid values
         xSpeed = SLMath.clamp(xSpeed, -1.0, 1.0);
         zRotation = SLMath.clamp(zRotation, -1.0, 1.0);
@@ -293,8 +266,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Drives using curvature drive algorithm with automatic quick turn
-    public void curvatureDrive(double xSpeed, double zRotation) {
-        this.curvatureDrive(xSpeed, zRotation, Settings.Motion.BASE_TURNING_SPEED);
+    public void curvatureDriveKalman(double xSpeed, double zRotation) {
+        curvatureDriveKalman(xSpeed, zRotation, Settings.Motion.BASE_TURNING_SPEED);
     }
 
 	// Encoder functions
