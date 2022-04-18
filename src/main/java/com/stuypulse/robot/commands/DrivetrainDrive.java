@@ -75,7 +75,7 @@ public class DrivetrainDrive extends CommandBase {
 	@Override
 	public void execute() {
 		double speed = gamepad.getLeftY();
-		double turn = gamepad.getRightX();
+		double turn = gamepad.getLeftX();
 
 		speed = SLMath.deadband(speed, 0.05);
 		turn = SLMath.deadband(turn, 0.05);
