@@ -2,6 +2,7 @@ package com.stuypulse.robot.commands;
 
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.Drivetrain;
+import com.stuypulse.robot.util.TrajectoryLoader;
 
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -25,6 +26,11 @@ public class DrivetrainRamsete extends RamseteCommand {
         this.drivetrain = drivetrain;
         this.traj = traj;
         this.resetPosition = true;
+    }
+
+    public DrivetrainRamsete(Drivetrain drivetrain, String traj) {
+        this(drivetrain, TrajectoryLoader.getTrajectory(traj));
+
     }
 
 

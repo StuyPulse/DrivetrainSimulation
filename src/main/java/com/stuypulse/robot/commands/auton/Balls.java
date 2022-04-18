@@ -12,7 +12,7 @@ public class Balls extends SequentialCommandGroup {
 
     public Balls(RobotContainer robot) {
         addCommands(
-            new DrivetrainRamsete(robot.drivetrain, TrajectoryLoader.getTrajectory(balls))
+            new DrivetrainRamsete(robot.drivetrain, balls)
         );
 
     }
