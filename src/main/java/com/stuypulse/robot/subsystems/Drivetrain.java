@@ -88,10 +88,17 @@ public class Drivetrain extends SubsystemBase {
 				new MotorControllerGroup(leftMotors),
 				new MotorControllerGroup(rightMotors));
 		
-				
+		drivetrainPlant =
+			LinearSystemId.identifyDrivetrainSystem(
+				Settings.SysID.kV, 
+				Settings.SysID.kA, 
+				Settings.SysID.kVAngular, 
+				Settings.SysID.kAAngular
+			);
+
         // Create Drivetrain Sim
         drivetrainSim = new DifferentialDrivetrainSim(
-			LinearSystemId.identifyDrivetrainSystem(Settings.SysID.kV, Settings.SysID.kA, Settings.SysID.kVAngular, Settings.SysID.kAAngular),
+			drivetrainPlant,
 			DCMotor.getNEO(3),
 			Settings.Motion.Encoders.GearRatio.Stages.HIGH_GEAR_STAGE,           
 			Settings.Motion.TRACK_WIDTH,                  
@@ -110,16 +117,16 @@ public class Drivetrain extends SubsystemBase {
 		leftEncoder = new Encoder(Ports.Grayhill.LEFT_A, Ports.Grayhill.LEFT_B); 
 		rightEncoder = new Encoder(Ports.Grayhill.RIGHT_A, Ports.Grayhill.RIGHT_B);
 
-		// Create Encoder Sims
-		leftEncoderSim = new EncoderSim(leftEncoder);
-		rightEncoderSim = new EncoderSim(rightEncoder);
-		
 		leftEncoder.setDistancePerPulse(Settings.Motion.Encoders.GRAYHILL_DISTANCE_PER_PULSE);
 		rightEncoder.setDistancePerPulse(Settings.Motion.Encoders.GRAYHILL_DISTANCE_PER_PULSE);
 		
 		leftEncoder.reset();
 		rightEncoder.reset();
 
+		// Create Encoder Sims
+		leftEncoderSim = new EncoderSim(leftEncoder);
+		rightEncoderSim = new EncoderSim(rightEncoder);
+		
         // Create Gyro
         gyro = new AnalogGyro(Ports.Gyro.CHANNEL);
 
@@ -129,15 +136,6 @@ public class Drivetrain extends SubsystemBase {
 		// Create Odometry
 		odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
 		field = new Field2d();
-
-		
-		drivetrainPlant =
-			LinearSystemId.identifyDrivetrainSystem(
-				Settings.SysID.kV, 
-				Settings.SysID.kA, 
-				Settings.SysID.kVAngular, 
-				Settings.SysID.kAAngular
-			);
 
 		observer =
 			new KalmanFilter<>(
@@ -213,14 +211,14 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public void tankDriveKalman(double left, double right) {
-		loop.setNextR(VecBuilder.fill(left, right));
+		loop.setNextR(VecBuilder.fill(left * Settings.Motion.MAX_TELE_SPEED, right * Settings.Motion.MAX_TELE_SPEED));
 		loop.correct(VecBuilder.fill(getLeftRate(), getRightRate()));
 		loop.predict(Settings.Motion.DT);
 
 		left = loop.getU(0);
 		right = loop.getU(1);
 
-		drivetrain.tankDrive(left / Settings.Motion.MAX_VOLTAGE, right / Settings.Motion.MAX_VOLTAGE);
+		tankDrive(left / Settings.Motion.MAX_VOLTAGE, right / Settings.Motion.MAX_VOLTAGE);
 	}
 
 	public void arcadeDrive(double speed, double rotation) {
@@ -267,6 +265,37 @@ public class Drivetrain extends SubsystemBase {
 
 		tankDriveKalman(left, right);
 	}
+
+	public void curvatureDrive(double xSpeed, double zRotation, double baseTS) {
+        // Clamp all inputs to valid values
+        xSpeed = SLMath.clamp(xSpeed, -1.0, 1.0);
+        zRotation = SLMath.clamp(zRotation, -1.0, 1.0);
+        baseTS = SLMath.clamp(baseTS, 0.0, 1.0);
+
+        // Find the amount to slow down turning by.
+        // This is proportional to the speed but has a base value
+        // that it starts from (allows turning in place)
+        double turnAdj = Math.max(baseTS, Math.abs(xSpeed));
+
+        // Find the speeds of the left and right wheels
+        double lSpeed = xSpeed + zRotation * turnAdj;
+        double rSpeed = xSpeed - zRotation * turnAdj;
+
+        // Find the maximum output of the wheels, so that if a wheel tries to go > 1.0
+        // it will be scaled down proportionally with the other wheels.
+        double scale = Math.max(1.0, Math.max(Math.abs(lSpeed), Math.abs(rSpeed)));
+
+        lSpeed /= scale;
+        rSpeed /= scale;
+
+        // Feed the inputs to the drivetrain
+        tankDriveKalman(lSpeed, rSpeed);
+    }
+
+    // Drives using curvature drive algorithm with automatic quick turn
+    public void curvatureDrive(double xSpeed, double zRotation) {
+        this.curvatureDrive(xSpeed, zRotation, Settings.Motion.BASE_TURNING_SPEED);
+    }
 
 	// Encoder functions
 	public double getRightDistance() {

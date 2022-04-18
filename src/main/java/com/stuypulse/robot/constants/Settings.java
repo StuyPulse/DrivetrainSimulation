@@ -41,6 +41,10 @@ public final class Settings {
 		double MAX_VOLTAGE = 12.0;
 		double DT = 0.020;
 
+		double BASE_TURNING_SPEED = 0.5;
+
+		double MAX_TELE_SPEED = Units.feetToMeters(17.3);
+
 		public interface Encoders {
 
             public interface GearRatio {
@@ -65,7 +69,7 @@ public final class Settings {
 
             double WHEEL_DIAMETER = Units.inchesToMeters(4);
 			double WHEEL_RADIUS = WHEEL_DIAMETER / 2.0;
-			
+
             double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
             double GRAYHILL_PULSES_PER_REVOLUTION = 256;
@@ -80,8 +84,8 @@ public final class Settings {
 	public interface SysID {
 		double kV = 1.6658;
 		double kA = 0.4515;
-		double kVAngular = 1.5;
-		double kAAngular = 0.3;
+		double kVAngular = 1.6658;
+		double kAAngular = 0.4515;
 	}
 
 	public interface PID {

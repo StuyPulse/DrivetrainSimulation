@@ -23,7 +23,7 @@ public class DrivetrainDrive extends CommandBase {
 
 	@Override
 	public void execute() {
-		drivetrain.arcadeDriveKalman(gamepad.getLeftY(), gamepad.getLeftX());
+		drivetrain.curvatureDrive(gamepad.getLeftY(), gamepad.getLeftX());
 	}
 
 }
