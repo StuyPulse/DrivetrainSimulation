@@ -2,6 +2,7 @@ package com.stuypulse.robot.subsystems;
 
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.SLMath;
 
 import edu.wpi.first.math.numbers.N2;
@@ -289,8 +290,12 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	// Gyro Functions
-	public double getGyroAngle() {
+	public double getRawGyroAngle() {
 		return gyro.getAngle();
+	}
+
+	public Angle getGyroAngle() {
+		return Angle.fromDegrees(getRawGyroAngle());
 	}
 
 	public void resetGyro() {
@@ -302,6 +307,11 @@ public class Drivetrain extends SubsystemBase {
 		resetLeftEncoder();
 		resetRightEncoder();
 		resetGyro();
+	}
+
+	public void reset(Pose2d location) {
+		resetSensors();
+		odometry.resetPosition(location, getGyroAngle().negative().getRotation2d());
 	}
 
 

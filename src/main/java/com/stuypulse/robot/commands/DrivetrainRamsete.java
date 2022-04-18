@@ -9,6 +9,10 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 public class DrivetrainRamsete extends RamseteCommand {
+    Drivetrain drivetrain;
+    Trajectory traj;
+    boolean resetPosition;
+
     public DrivetrainRamsete(Drivetrain drivetrain, Trajectory traj) {
         super(
             traj,
@@ -18,5 +22,26 @@ public class DrivetrainRamsete extends RamseteCommand {
             drivetrain::tankDriveKalman,
             drivetrain
         );
+        this.drivetrain = drivetrain;
+        this.traj = traj;
+        this.resetPosition = true;
+    }
+
+    // [DEFAULT] Resets the drivetrain to the begining of the trajectory
+    public DrivetrainRamsete robotRelative() {
+        this.resetPosition = true;
+        return this;
+    }
+
+    // Make the trajectory relative to the field
+    public DrivetrainRamsete fieldRelative() {
+        this.resetPosition = false;
+        return this;
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+        if (resetPosition) drivetrain.reset(traj.getInitialPose());
     }
 }
