@@ -31,7 +31,7 @@ public final class Settings {
 		double MEASURE_STDEV_LEFT = 0.01;
 		double MEASURE_STDEV_RIGHT = 0.01;
 
-		// qelms. State error tolerance. Decrease this to more heavily penalize state excursion, or make the controller behave more aggressiLEFTy.
+		// qelms. State error tolerance. Decrease this to more heavily penalize state excursion, or make the controller behave more aggressively.
 		double Q_LEFT = 8.0;
 		double Q_RIGHT = 8.0;
 
