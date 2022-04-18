@@ -2,9 +2,17 @@ package com.stuypulse.robot.subsystems;
 
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.stuylib.math.SLMath;
 
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.LinearQuadraticRegulator;
+import edu.wpi.first.math.estimator.KalmanFilter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
@@ -51,6 +59,12 @@ public class Drivetrain extends SubsystemBase {
     private AnalogGyroSim gyroSim;
 	private DifferentialDrivetrainSim drivetrainSim;
 
+	// State space
+	private final LinearSystem<N2, N2, N2> drivetrainPlant; // The drivetrain model
+	private final KalmanFilter<N2, N2, N2> observer; // The observer fuses our encoder/gyro data and voltage inputs to reject noise.
+	private final LinearQuadraticRegulator<N2, N2, N2> controller; // A LQR uses feedback to create voltage commands.
+	private final LinearSystemLoop<N2, N2, N2> loop; // Loop that brings it all together
+
     public Drivetrain() {
 		// Add Motors
 		leftMotors =
@@ -72,13 +86,14 @@ public class Drivetrain extends SubsystemBase {
 			new DifferentialDrive(
 				new MotorControllerGroup(leftMotors),
 				new MotorControllerGroup(rightMotors));
-
+		
+				
         // Create Drivetrain Sim
         drivetrainSim = new DifferentialDrivetrainSim(
 			LinearSystemId.identifyDrivetrainSystem(Settings.SysID.kV, Settings.SysID.kA, Settings.SysID.kVAngular, Settings.SysID.kAAngular),
 			DCMotor.getNEO(2),       // 2 NEO motors on each side of the drivetrain.
 			7.29,                    // gear ratio
-			0.7112,                  // track width
+			Settings.Motion.TRACK_WIDTH,                  // track width
 			Units.inchesToMeters(3), // wheel radius
 
 			// measurement noise deviation ???
@@ -101,6 +116,42 @@ public class Drivetrain extends SubsystemBase {
 		// Create Odometry
 		odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
 		field = new Field2d();
+
+		
+		drivetrainPlant =
+			LinearSystemId.identifyDrivetrainSystem(
+				Settings.SysID.kV, 
+				Settings.SysID.kA, 
+				Settings.SysID.kVAngular, 
+				Settings.SysID.kAAngular
+			);
+
+		observer =
+			new KalmanFilter<>(
+				Nat.N2(),
+				Nat.N2(),
+				drivetrainPlant,
+				VecBuilder.fill(Settings.StateSpace.STATE_STDEV_LEFT, Settings.StateSpace.STATE_STDEV_RIGHT), 
+				VecBuilder.fill(Settings.StateSpace.MEASURE_STDEV_LEFT, Settings.StateSpace.MEASURE_STDEV_RIGHT), 
+				Settings.StateSpace.DT
+			);
+
+		controller =
+			new LinearQuadraticRegulator<>(
+				drivetrainPlant,
+				VecBuilder.fill(Settings.StateSpace.Q_LEFT, Settings.StateSpace.Q_RIGHT), 
+				VecBuilder.fill(Settings.StateSpace.R_LEFT, Settings.StateSpace.R_RIGHT), 
+				Settings.StateSpace.DT
+			);
+		
+		loop =
+			new LinearSystemLoop<>(
+				drivetrainPlant, 
+				controller, 
+				observer, 
+				Settings.StateSpace.MAX_VOLTAGE, 
+				Settings.StateSpace.DT
+			);
 
         // put data on SmartDashboard
         SmartDashboard.putData("Field", field);
@@ -134,6 +185,10 @@ public class Drivetrain extends SubsystemBase {
                     rightEncoder.getDistance());
     }
 
+	public Pose2d getPose() {
+		return odometry.getPoseMeters();
+	}
+
 	// Driving Commands
 
 	public void stop() {
@@ -144,10 +199,61 @@ public class Drivetrain extends SubsystemBase {
 		drivetrain.tankDrive(left, right, false);
 	}
 
+	public void tankDriveKalman(double left, double right) {
+		loop.setNextR(VecBuilder.fill(left, right));
+		loop.correct(VecBuilder.fill(getLeftRate(), getRightRate()));
+		loop.predict(Settings.StateSpace.DT);
+
+		left = loop.getU(0);
+		right = loop.getU(1);
+
+		drivetrain.tankDrive(left / Settings.StateSpace.MAX_VOLTAGE, right / Settings.StateSpace.MAX_VOLTAGE);
+	}
+
 	public void arcadeDrive(double speed, double rotation) {
 		drivetrain.arcadeDrive(speed, rotation, false);
 	}
 
+	public void arcadeDriveKalman(double speed, double turn) {
+		speed = SLMath.deadband(speed, 0.05);
+		turn = SLMath.deadband(turn, 0.05);
+
+		// Manual arcade drive implementation WOOZY
+		double biggerInput = 
+			Math.signum(speed) * 
+			Math.max(
+				Math.abs(speed),
+				Math.abs(turn)
+			);
+
+		double left, right;
+
+		if (speed >= 0.0) {
+			if (turn >= 0.0) {
+				left = biggerInput;
+				right = speed - turn;		
+			} else {
+				left = speed + turn;
+				right = biggerInput;
+			}
+		} else {
+			if (turn >= 0) {
+				left = speed + turn;
+				right = biggerInput;
+			} else {
+				left = biggerInput;
+				right = speed - turn;
+			}
+		}
+
+		double mag = Math.max(Math.abs(left), Math.abs(right));
+		if (mag > 1.0) {
+			left /= mag;
+			right /= mag;
+		}
+
+		tankDriveKalman(left, right);
+	}
 
 	// Encoder functions
 	public double getRightDistance() {

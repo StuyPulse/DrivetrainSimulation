@@ -18,7 +18,9 @@ public final class Settings {
 	
     SmartBoolean DEBUG_MODE = new SmartBoolean("Debug Mode", false);
 
-	
+	public interface Motion {
+		double TRACK_WIDTH = 0.7112;
+	}
 
 	public interface StateSpace {
 		// How accurate we think our model is
