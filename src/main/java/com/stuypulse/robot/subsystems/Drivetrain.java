@@ -144,16 +144,6 @@ public class Drivetrain extends SubsystemBase {
 		drivetrain.tankDrive(left, right, false);
 	}
 
-	public void tankDriveVolts(double leftV, double rightV) {
-		leftMotors[0].setVoltage(leftV);
-		leftMotors[1].setVoltage(leftV);
-		leftMotors[2].setVoltage(leftV);
-
-		rightMotors[0].setVoltage(rightV);
-		rightMotors[1].setVoltage(rightV);
-		rightMotors[2].setVoltage(rightV);
-	}
-
 	public void arcadeDrive(double speed, double rotation) {
 		drivetrain.arcadeDrive(speed, rotation, false);
 	}

@@ -121,7 +121,7 @@ public class DrivetrainDrive extends CommandBase {
 		left = loop.getU(0);
 		right = loop.getU(1);
 
-		drivetrain.tankDriveVolts(left, right);
+		drivetrain.tankDrive(left / Settings.StateSpace.MAX_VOLTAGE, right / Settings.StateSpace.MAX_VOLTAGE);
 	}
 
 }
