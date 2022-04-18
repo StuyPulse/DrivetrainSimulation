@@ -313,7 +313,7 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public void resetGyro() {
-		gyro.reset();	
+		gyro.reset();
 	}
 
 	// Reset sensors
@@ -325,6 +325,7 @@ public class Drivetrain extends SubsystemBase {
 
 	public void reset(Pose2d location) {
 		resetSensors();
+		drivetrainSim.setPose(location);
 		odometry.resetPosition(location, getGyroAngle().negative().getRotation2d());
 	}
 
