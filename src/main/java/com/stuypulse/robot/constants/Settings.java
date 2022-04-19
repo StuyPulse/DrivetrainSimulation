@@ -7,6 +7,7 @@ package com.stuypulse.robot.constants;
 
 import java.nio.file.Path;
 
+import com.stuypulse.stuylib.math.Vector2D;
 import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
 
@@ -30,11 +31,6 @@ public final class Settings {
         // DriverStation.reportWarning(message, false);
         System.out.println(message);
     }
-
-	public interface Field {
-		double FIELD_WIDTH = 54;
-		double FIELD_HEIGHT = 27;
-	}
 
 	public interface Motion {
 		double MAX_VELOCITY = 2.0;

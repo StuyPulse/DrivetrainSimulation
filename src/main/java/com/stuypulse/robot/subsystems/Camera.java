@@ -1,5 +1,6 @@
 package com.stuypulse.robot.subsystems;
 
+import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.Vector2D;
@@ -25,12 +26,7 @@ public class Camera extends SubsystemBase {
 
     public Camera(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
-
-        // TODO: better way to find center? 
-        this.hub = new Vector2D(
-            Units.feetToMeters(Settings.Field.FIELD_WIDTH) / 2.0,
-            Units.feetToMeters(Settings.Field.FIELD_HEIGHT) / 2.0
-        );
+        this.hub = Field.HUB;
 
         addGoal(drivetrain.getField());
     }
@@ -47,8 +43,7 @@ public class Camera extends SubsystemBase {
         Pose2d pose = drivetrain.getPose();
         Vector2D pos = new Vector2D(pose.getX(), pose.getY());
         Angle ang = Angle.fromDegrees(pose.getRotation().getDegrees());
-
-        return hub.sub(pos).getAngle().sub(ang);
+        return ang.sub(hub.sub(pos).getAngle());
     }
 
     private double getRawDistance() {
@@ -71,7 +66,7 @@ public class Camera extends SubsystemBase {
             return Angle.kZero;
         }
 
-        return getAngleToHub().negative();
+        return getAngleToHub();
     }
 
     public double getDistance() {
