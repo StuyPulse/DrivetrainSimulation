@@ -12,6 +12,7 @@ import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 
 /*-
@@ -24,6 +25,11 @@ public final class Settings {
 	
     SmartBoolean DEBUG_MODE = new SmartBoolean("Debug Mode", false);
 	public static Path DEPLOY_DIRECTORY = Filesystem.getDeployDirectory().toPath();
+
+    public static void reportWarning(String message) {
+        // DriverStation.reportWarning(message, false);
+        System.out.println(message);
+    }
 
 	public interface Motion {
 		double MAX_VELOCITY = 2.0;
@@ -94,8 +100,8 @@ public final class Settings {
 	public interface SysID {
 		double kV = 1.6658;
 		double kA = 0.4515;
-		double kVAngular = 1.6658;
-		double kAAngular = 0.4515;
+		double kVAngular = 3.0;
+		double kAAngular = 1.0;
 	}
 
 	public interface PID {
