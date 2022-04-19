@@ -25,12 +25,14 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Camera": "Subsystem",
       "/LiveWindow/Drivetrain": "Subsystem",
+      "/LiveWindow/Turret": "Subsystem",
       "/LiveWindow/Ungrouped/AnalogGyro[0]": "Gyro",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/SmartDashboard/Autonomous": "String Chooser",
       "/SmartDashboard/Control/Controller": "String Chooser",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/turret": "Mechanism2d"
     },
     "windows": {
       "/SmartDashboard/Autonomous": {
@@ -59,6 +61,19 @@
           "style": "Box/Image",
           "width": 1.7999999523162842
         },
+        "goal": {
+          "arrowColor": [
+            0.6176470518112183,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 13,
+          "arrowWeight": 13.0,
+          "length": 0.30000001192092896,
+          "weight": 25.0,
+          "width": 0.30000001192092896
+        },
         "image": "C:\\Users\\Shaurya Sen\\Pictures\\fortniters.jpg",
         "traj": {
           "arrows": false,
@@ -71,6 +86,7 @@
           "style": "Line"
         },
         "window": {
+          "name": "Fortnite Arena",
           "visible": true
         }
       }
