@@ -31,6 +31,11 @@ public final class Settings {
         System.out.println(message);
     }
 
+	public interface Field {
+		double FIELD_WIDTH = 27;
+		double FIELD_HEIGHT = 54;
+	}
+
 	public interface Motion {
 		double MAX_VELOCITY = 2.0;
         double MAX_ACCELERATION = 3.0;
@@ -105,9 +110,18 @@ public final class Settings {
 	}
 
 	public interface PID {
-		SmartNumber kP = new SmartNumber("PID/kP", 0.1);
-		SmartNumber kI = new SmartNumber("PID/kI", 0.0);
-		SmartNumber kD = new SmartNumber("PID/kD", 0.0);
+		public interface DriveDistance {
+			SmartNumber kP = new SmartNumber("PID/DriveDistance/kP", 0.3);
+			SmartNumber kI = new SmartNumber("PID/DriveDistance/kI", 0.0);
+			SmartNumber kD = new SmartNumber("PID/DriveDistance/kD", 0.0);
+		}
+
+		public interface DrivetrainAlign {
+			SmartNumber kP = new SmartNumber("PID/DrivetrainAlign/kP", 0.1);
+			SmartNumber kI = new SmartNumber("PID/DrivetrainAlign/kI", 0.0);
+			SmartNumber kD = new SmartNumber("PID/DrivetrainAlign/kD", 0.0);
+		}
+		
 	}
 
 	public interface BangBang {
