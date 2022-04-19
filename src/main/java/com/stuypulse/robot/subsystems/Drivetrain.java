@@ -333,6 +333,10 @@ public class Drivetrain extends SubsystemBase {
 		odometry.resetPosition(location, getGyroAngle().negative().getRotation2d());
 	}
 
+    public void reset() {
+        reset(getPose());
+    }
+
 
 	// Periodic Functions
 
