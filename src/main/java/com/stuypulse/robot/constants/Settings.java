@@ -5,10 +5,14 @@
 
 package com.stuypulse.robot.constants;
 
+import java.nio.file.Path;
+
 import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Filesystem;
 
 /*-
  * File containing tunable settings for every subsystem on the robot.
@@ -19,8 +23,12 @@ import edu.wpi.first.math.util.Units;
 public final class Settings {
 	
     SmartBoolean DEBUG_MODE = new SmartBoolean("Debug Mode", false);
+	public static Path DEPLOY_DIRECTORY = Filesystem.getDeployDirectory().toPath();
 
 	public interface Motion {
+		double MAX_VELOCITY = 2.0;
+        double MAX_ACCELERATION = 3.0;
+
 		double TRACK_WIDTH = Units.inchesToMeters(26.9);
 		// How accurate we think our model is
 		double STATE_STDEV_LEFT = 3.0;
@@ -44,6 +52,8 @@ public final class Settings {
 		double BASE_TURNING_SPEED = 0.5;
 
 		double MAX_TELE_SPEED = Units.feetToMeters(17.3);
+
+		DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);
 
 		public interface Encoders {
 

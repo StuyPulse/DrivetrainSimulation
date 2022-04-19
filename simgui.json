@@ -10,9 +10,6 @@
         "header": {
           "open": true
         }
-      },
-      "window": {
-        "visible": true
       }
     },
     "Other Devices": {
@@ -41,6 +38,35 @@
         }
       },
       "/SmartDashboard/Field": {
+        "Robot": {
+          "arrowColor": [
+            0.07947441935539246,
+            0.39240509271621704,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 74,
+          "arrowWeight": 5.0,
+          "color": [
+            0.9113923907279968,
+            0.057683058083057404,
+            0.057683058083057404,
+            255.0
+          ],
+          "image": "C:\\Users\\Shaurya Sen\\Pictures\\finalShauryaTrace.png",
+          "style": "Line"
+        },
+        "image": "C:\\Users\\Shaurya Sen\\Pictures\\BONZI.png",
+        "traj": {
+          "arrows": false,
+          "color": [
+            1.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "style": "Line"
+        },
         "window": {
           "visible": true
         }
@@ -65,7 +91,7 @@
     "Plot <0>": {
       "plots": [
         {
-          "height": 229,
+          "height": 244,
           "series": [
             {
               "color": [

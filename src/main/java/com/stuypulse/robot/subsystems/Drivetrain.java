@@ -168,6 +168,10 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putData("Field", field);
 
 	}
+
+	public Field2d getField() {
+		return field;
+	}
 	
 
 	private double getLeftMotorSpeed() {
