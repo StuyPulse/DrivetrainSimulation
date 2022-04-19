@@ -1,16 +1,11 @@
 package com.stuypulse.robot.subsystems;
 
-import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.constants.Settings.PID.DriveDistance;
+
 import com.stuypulse.stuylib.math.Vector2D;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Turret extends SubsystemBase {
@@ -26,10 +21,6 @@ public class Turret extends SubsystemBase {
         this.turret = drivetrain.getField().getObject("turret");
 
         setPose(drivetrain);
-
-        // create the turret
-        
-
     }
 
     private void setPose(Drivetrain drivetrain) {
