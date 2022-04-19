@@ -9,7 +9,7 @@ import com.stuypulse.robot.commands.DriveDistance;
 import com.stuypulse.robot.commands.DrivetrainAlign;
 import com.stuypulse.robot.commands.DrivetrainDrive;
 import com.stuypulse.robot.commands.auton.Balls;
-import com.stuypulse.robot.commands.auton.DoNothingAuton;
+import com.stuypulse.robot.commands.auton.TomatoBalls;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.Camera;
 import com.stuypulse.robot.subsystems.Drivetrain;
@@ -64,10 +64,10 @@ public class RobotContainer {
   /**************/
 
   public void configureAutons() {
-    autonChooser.setDefaultOption("PID", new DriveDistance.PID(drivetrain, 10));
-    autonChooser.addOption("Do Nothing", new DoNothingAuton());
+    autonChooser.addOption("PID", new DriveDistance.PID(drivetrain, 10));
     autonChooser.addOption("BangBang", new DriveDistance.BangBang(drivetrain, 10));
     autonChooser.addOption("Balls", new Balls(this));
+    autonChooser.setDefaultOption("TomatoBalls", new TomatoBalls(this));
 
     SmartDashboard.putData("Autonomous", autonChooser);
   }
