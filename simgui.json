@@ -73,11 +73,7 @@
           "style": "Line"
         },
         "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/turret": {
-        "window": {
+          "name": "Fortnite Arena",
           "visible": true
         }
       }

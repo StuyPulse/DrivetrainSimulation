@@ -21,17 +21,18 @@ public class Turret extends SubsystemBase {
         this.drivetrain = drivetrain;
         this.turret = drivetrain.getField().getObject("turret");
 
-        setPose(drivetrain);
+        setPose(drivetrain, Rotation2d.fromDegrees(0.0));
 
     }
 
-    private void setPose(Drivetrain drivetrain) {
+    private void setPose(Drivetrain drivetrain, Rotation2d angle) {
 
-        turret.setPose(new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), Rotation2d.fromDegrees(0)));
+        turret.setPose(new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), angle));
     }
-    // private void setAngle(Angle angle) {
-    //     turret.set
-    // }
+
+    public void setPose(Rotation2d angle) {
+        setPose(drivetrain, angle);
+    }
 
     public Rotation2d getAngle() {
         return turret.getPose().getRotation();
@@ -42,7 +43,7 @@ public class Turret extends SubsystemBase {
     @Override
     public void periodic() {
 
-        setPose(drivetrain);
+        setPose(drivetrain, getAngle());
     }
 
 
