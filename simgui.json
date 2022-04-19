@@ -25,12 +25,14 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Camera": "Subsystem",
       "/LiveWindow/Drivetrain": "Subsystem",
+      "/LiveWindow/Turret": "Subsystem",
       "/LiveWindow/Ungrouped/AnalogGyro[0]": "Gyro",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/SmartDashboard/Autonomous": "String Chooser",
       "/SmartDashboard/Control/Controller": "String Chooser",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/turret": "Mechanism2d"
     },
     "windows": {
       "/SmartDashboard/Autonomous": {
@@ -73,6 +75,11 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/turret": {
+        "window": {
+          "visible": true
+        }
       }
     }
   },
@@ -100,7 +107,7 @@
     "Plot <0>": {
       "plots": [
         {
-          "height": 174,
+          "height": 180,
           "series": [
             {
               "color": [

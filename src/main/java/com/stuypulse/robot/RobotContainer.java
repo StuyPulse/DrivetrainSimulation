@@ -13,6 +13,7 @@ import com.stuypulse.robot.commands.auton.TomatoBalls;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.Camera;
 import com.stuypulse.robot.subsystems.Drivetrain;
+import com.stuypulse.robot.subsystems.Turret;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
@@ -26,6 +27,8 @@ public class RobotContainer {
   public final Drivetrain drivetrain = new Drivetrain();
 
   public final Camera camera = new Camera(drivetrain);
+
+  public final Turret turret = new Turret(drivetrain);
 
   // Gamepads
   public final Gamepad driver = new AutoGamepad(Ports.Gamepad.DRIVER);

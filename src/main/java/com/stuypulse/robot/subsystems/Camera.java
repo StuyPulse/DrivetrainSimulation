@@ -28,8 +28,8 @@ public class Camera extends SubsystemBase {
 
         // TODO: better way to find center? 
         this.hub = new Vector2D(
-            Units.feetToMeters(54.0) / 2.0,
-            Units.feetToMeters(27.0) / 2.0
+            Units.feetToMeters(Settings.Field.FIELD_WIDTH) / 2.0,
+            Units.feetToMeters(Settings.Field.FIELD_HEIGHT) / 2.0
         );
 
         addGoal(drivetrain.getField());

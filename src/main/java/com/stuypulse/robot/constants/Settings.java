@@ -32,8 +32,8 @@ public final class Settings {
     }
 
 	public interface Field {
-		double FIELD_WIDTH = 27;
-		double FIELD_HEIGHT = 54;
+		double FIELD_WIDTH = 54;
+		double FIELD_HEIGHT = 27;
 	}
 
 	public interface Motion {
