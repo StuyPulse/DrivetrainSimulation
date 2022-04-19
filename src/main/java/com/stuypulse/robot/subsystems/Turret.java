@@ -1,8 +1,13 @@
 package com.stuypulse.robot.subsystems;
 
+import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.PID.DriveDistance;
+import com.stuypulse.stuylib.math.Vector2D;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -10,26 +15,38 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Turret extends SubsystemBase {
     
-    private Mechanism2d turret;
-    private MechanismRoot2d root;
+    private Vector2D turretVector;
     private Drivetrain drivetrain;
+    private FieldObject2d turret;
+
 
 
     public Turret (Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
-        Pose2d robotPos = drivetrain.getPose();
+        this.turret = drivetrain.getField().getObject("turret");
 
-        this.turret = new Mechanism2d(3,3);
-        this.root = turret.getRoot("turret", robotPos.getX() , robotPos.getY());
+        setPose(drivetrain);
 
-        // put on the SD
-        SmartDashboard.putData("turret", turret);
+        // create the turret
+        
 
     }
 
+    private void setPose(Drivetrain drivetrain) {
+        this.turretVector = new Vector2D(
+            drivetrain.getPose().getX(),
+            drivetrain.getPose().getY()
+        );
+
+        turret.setPose(new Pose2d(turretVector.x, turretVector.y, Rotation2d.fromDegrees(0)));
+    }
+
+
+
     @Override
     public void periodic() {
-        root.setPosition(drivetrain.getPose().getX(), drivetrain.getPose().getY());
+
+        setPose(drivetrain);
     }
 
 
