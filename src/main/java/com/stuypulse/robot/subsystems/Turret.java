@@ -1,6 +1,7 @@
 package com.stuypulse.robot.subsystems;
 
 
+import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.Vector2D;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -10,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Turret extends SubsystemBase {
     
-    private Vector2D turretVector;
+    // private Vector2D turretVector;
     private Drivetrain drivetrain;
     private FieldObject2d turret;
 
@@ -21,15 +22,19 @@ public class Turret extends SubsystemBase {
         this.turret = drivetrain.getField().getObject("turret");
 
         setPose(drivetrain);
+
     }
 
     private void setPose(Drivetrain drivetrain) {
-        this.turretVector = new Vector2D(
-            drivetrain.getPose().getX(),
-            drivetrain.getPose().getY()
-        );
 
-        turret.setPose(new Pose2d(turretVector.x, turretVector.y, Rotation2d.fromDegrees(0)));
+        turret.setPose(new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), Rotation2d.fromDegrees(0)));
+    }
+    // private void setAngle(Angle angle) {
+    //     turret.set
+    // }
+
+    public Rotation2d getAngle() {
+        return turret.getPose().getRotation();
     }
 
 
