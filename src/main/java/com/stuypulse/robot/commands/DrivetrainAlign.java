@@ -1,5 +1,6 @@
 package com.stuypulse.robot.commands;
 
+import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.Camera;
 import com.stuypulse.robot.subsystems.Drivetrain;
 import com.stuypulse.stuylib.control.Controller;
@@ -26,7 +27,7 @@ public class DrivetrainAlign extends CommandBase {
         this.drivetrain = drivetrain;
         this.camera = camera;
 
-        angleController = new PIDController(1.0 / 13.5, 0, 0);
+        angleController = new PIDController(Settings.PID.DrivetrainAlign.kP, Settings.PID.DrivetrainAlign.kI, Settings.PID.DrivetrainAlign.kD);
 
         targetAngle = 0.0;
 

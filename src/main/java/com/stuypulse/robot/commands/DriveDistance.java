@@ -15,7 +15,7 @@ import com.stuypulse.robot.subsystems.Drivetrain;
 public class DriveDistance extends CommandBase {
     public static class PID extends DriveDistance {
         public PID(Drivetrain drivetrain, double distance) {
-            super(drivetrain, distance, new PIDController(Settings.PID.kP, Settings.PID.kI, Settings.PID.kD));
+            super(drivetrain, distance, new PIDController(Settings.PID.DriveDistance.kP, Settings.PID.DriveDistance.kI, Settings.PID.DriveDistance.kD));
         }
     }
 
