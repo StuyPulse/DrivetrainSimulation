@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * TODO:
- *  - add a "DelayFilter" for camera data
+ *  - implement a polling istream on the camera data with the limelight delay + image processing delay
  *  - take x-angle from a point on the rim of the hub (cast a ray into a circle)
  *
  */
