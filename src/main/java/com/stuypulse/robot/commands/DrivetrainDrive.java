@@ -17,11 +17,6 @@ public class DrivetrainDrive extends CommandBase {
 	}
 
 	@Override
-	public void initialize() {
-		drivetrain.resetSensors();
-	}
-
-	@Override
 	public void execute() {
 		drivetrain.arcadeDriveKalman(gamepad.getLeftY(), gamepad.getLeftX());
 	}

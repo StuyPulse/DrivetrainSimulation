@@ -23,6 +23,11 @@ public class DriveDistance extends CommandBase {
         public BangBang(Drivetrain drivetrain, double distance) {
             super(drivetrain, distance, new BangBangController(Settings.BangBang.SPEED.get()));
         }
+
+        @Override
+        public boolean isFinished() {
+            return false;
+        }
     }
 
     private final Drivetrain drivetrain;
