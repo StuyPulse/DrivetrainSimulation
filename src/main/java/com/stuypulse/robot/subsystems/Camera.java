@@ -68,6 +68,7 @@ public class Camera extends SubsystemBase {
     public Angle getXAngle() {
         if (!hasTarget()) {
             Settings.reportWarning("Unable to find Limelight target [getXAngle()]");
+            return Angle.kZero;
         }
 
         return getAngleToHub().negative();
@@ -76,6 +77,7 @@ public class Camera extends SubsystemBase {
     public double getDistance() {
         if (!hasTarget()) {
             Settings.reportWarning("Unable to find Limelight target [getDistance()]");
+            return 0;
         }
 
         return getRawDistance() - Units.feetToMeters(2);
@@ -85,6 +87,7 @@ public class Camera extends SubsystemBase {
     public Angle getYAngle() {
         if (!hasTarget()) {
             Settings.reportWarning("Unable to find Limelight target [getYAngle()]");
+            return Angle.kZero;
         }
 
         technically possible to work "backwards" using the distance and hub height 
