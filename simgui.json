@@ -56,7 +56,7 @@
             0.057683058083057404,
             255.0
           ],
-          "image": "C:\\Users\\Shaurya Sen\\Pictures\\battlebus.png",
+          "image": "images/battlebus.png",
           "length": 2.0,
           "style": "Box/Image",
           "width": 1.7999999523162842
@@ -74,7 +74,7 @@
           "weight": 25.0,
           "width": 0.30000001192092896
         },
-        "image": "C:\\Users\\Shaurya Sen\\Pictures\\fortniters.jpg",
+        "image": "images/fortniters.jpg",
         "traj": {
           "arrows": false,
           "color": [
@@ -84,6 +84,11 @@
             255.0
           ],
           "style": "Line"
+        },
+        "turret": {
+          "image": "images/machine-gun.png",
+          "length": 1.5,
+          "width": 0.6000000238418579
         },
         "window": {
           "name": "Fortnite Arena",
