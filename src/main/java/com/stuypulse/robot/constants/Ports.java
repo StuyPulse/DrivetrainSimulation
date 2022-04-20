@@ -36,4 +36,10 @@ public final class Ports {
         int CHANNEL = 0;
     }
 
+    public interface Turret {
+        int MOTOR = 20;
+        int LEFT = 21;
+        int RIGHT = 22;
+    }
+
 }

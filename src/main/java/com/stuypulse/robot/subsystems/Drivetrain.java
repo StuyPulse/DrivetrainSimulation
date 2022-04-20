@@ -90,10 +90,10 @@ public class Drivetrain extends SubsystemBase {
 		
 		drivetrainPlant =
 			LinearSystemId.identifyDrivetrainSystem(
-				Settings.SysID.kV, 
-				Settings.SysID.kA, 
-				Settings.SysID.kVAngular, 
-				Settings.SysID.kAAngular
+				Settings.SysID.Drivetrain.kV, 
+				Settings.SysID.Drivetrain.kA, 
+				Settings.SysID.Drivetrain.kVAngular, 
+				Settings.SysID.Drivetrain.kAAngular
 			);
 
         // Create Drivetrain Sim

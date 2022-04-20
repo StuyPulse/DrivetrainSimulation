@@ -95,14 +95,24 @@ public final class Settings {
                             * GearRatio.GRAYHILL_TO_WHEEL;
 
             boolean GRAYHILL_INVERTED = true;
+
+			// idk what dpp should be
+			double TURRET_DISTANCE_PER_PULSE = 0.694;
         }
 	}
 
 	public interface SysID {
-		double kV = 1.6658;
-		double kA = 0.4515;
-		double kVAngular = 3.0;
-		double kAAngular = 1.0;
+		public interface Drivetrain {
+			double kV = 1.6658;
+			double kA = 0.4515;
+			double kVAngular = 3.0;
+			double kAAngular = 1.0;
+		}
+
+		public interface Turret {
+			double kV = 0.5;
+			double kA = 0.1;
+		}
 	}
 
 	public interface PID {
@@ -116,6 +126,12 @@ public final class Settings {
 			SmartNumber kP = new SmartNumber("PID/DrivetrainAlign/kP", 0.1);
 			SmartNumber kI = new SmartNumber("PID/DrivetrainAlign/kI", 0.0);
 			SmartNumber kD = new SmartNumber("PID/DrivetrainAlign/kD", 0.0);
+		}
+
+		public interface Turret {
+			SmartNumber kP = new SmartNumber("PID/Turret/kP", 0.1);
+			SmartNumber kI = new SmartNumber("PID/Turret/kI", 0.0);
+			SmartNumber kD = new SmartNumber("PID/Turret/kD", 0.0);
 		}
 		
 	}
