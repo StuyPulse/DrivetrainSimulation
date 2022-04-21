@@ -13,11 +13,13 @@ import com.stuypulse.stuylib.math.Vector2D;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Turret extends SubsystemBase {
@@ -25,7 +27,7 @@ public class Turret extends SubsystemBase {
     private CANSparkMax motor;
     private Encoder encoder;
     private EncoderSim encoderSim;
-    private LinearSystemSim sim;
+    private FlywheelSim sim;
 
     private Controller controller;
 
@@ -33,6 +35,8 @@ public class Turret extends SubsystemBase {
     private FieldObject2d turretSim;
 
     private Vector2D target;
+
+    private double encoderDistance;
 
     public Turret(Drivetrain drivetrain) {
         this.motor = new CANSparkMax(Ports.Turret.MOTOR, MotorType.kBrushless);
@@ -42,14 +46,19 @@ public class Turret extends SubsystemBase {
         encoder.setDistancePerPulse(Settings.Motion.Encoders.TURRET_DISTANCE_PER_PULSE);
 
         this.encoderSim = new EncoderSim(encoder);
+        encoderDistance = 0;
         
-        this.sim = new LinearSystemSim<>(
-            LinearSystemId.identifyVelocitySystem(
-                Settings.SysID.Turret.kV,
-                Settings.SysID.Turret.kA
-            ));
+        this.sim = new FlywheelSim(
+                LinearSystemId.identifyVelocitySystem(
+                    Settings.SysID.Turret.kV,
+                    Settings.SysID.Turret.kA
+                ),
+                DCMotor.getNEO(1),
+                Settings.Motion.Encoders.GearRatio.TURRET_GEARING
+            );
 
-        this.controller = new PIDController(Settings.PID.Turret.kP, Settings.PID.Turret.kI, Settings.PID.Turret.kD);
+        this.controller =
+            new PIDController(Settings.PID.Turret.kP, Settings.PID.Turret.kI, Settings.PID.Turret.kD);
 
         this.drivetrain = drivetrain;
         this.turretSim = drivetrain.getField().getObject("turret");
@@ -81,22 +90,30 @@ public class Turret extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        sim.setInput(motor.get());
+        sim.setInputVoltage(motor.get());
 
         sim.update(Settings.Motion.DT);
 
-        // FIX THIS: THESE NUMBERS ARE PLACEHOLDERS
-        encoderSim.setDistance(sim.getOutput(0));
-        encoderSim.setRate(sim.getOutput(0));
+        double rate = sim.getAngularVelocityRPM();
+        encoderSim.setRate(rate);
+        encoderDistance += rate * Settings.Motion.DT;
+
+        encoderSim.setDistance(encoderDistance);
     }
 
     @Override
     public void periodic() {
         double error = getTargetAngle().toDegrees() - turretSim.getPose().getRotation().getDegrees();
+    
+        if (error < -180) {
+            error += 360;
+        } else if (error > 180) {
+            error -= 360;
+        }
 
         motor.set(controller.update(error));
 
-        setPose(Angle.fromDegrees(encoder.getDistance() / 360.0));
+        setPose(Angle.fromDegrees(encoder.getDistance()));
     }
 
 }

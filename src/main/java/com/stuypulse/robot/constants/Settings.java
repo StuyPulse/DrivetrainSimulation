@@ -82,6 +82,8 @@ public final class Settings {
                 /** = 0.22666 */
                 double GRAYHILL_TO_WHEEL =
                         Stages.GRAYHILL_STAGE * Stages.THIRD_STAGE * Stages.EXTERNAL_STAGE;
+
+				double TURRET_GEARING = 1.0;
             }
 
             double WHEEL_DIAMETER = Units.inchesToMeters(4);
@@ -129,9 +131,9 @@ public final class Settings {
 		}
 
 		public interface Turret {
-			SmartNumber kP = new SmartNumber("PID/Turret/kP", 0.1);
+			SmartNumber kP = new SmartNumber("PID/Turret/kP", 0.5);
 			SmartNumber kI = new SmartNumber("PID/Turret/kI", 0.0);
-			SmartNumber kD = new SmartNumber("PID/Turret/kD", 0.0);
+			SmartNumber kD = new SmartNumber("PID/Turret/kD", 0.1);
 		}
 		
 	}
