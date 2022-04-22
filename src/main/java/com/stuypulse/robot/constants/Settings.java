@@ -108,7 +108,7 @@ public final class Settings {
 			double kV = 1.6658;
 			double kA = 0.4515;
 			double kVAngular = 3.0;
-			double kAAngular = 1.0;
+			double kAAngular = 2.0;
 		}
 
 		public interface Turret {
@@ -131,8 +131,8 @@ public final class Settings {
 		}
 
 		public interface Turret {
-			SmartNumber kP = new SmartNumber("PID/Turret/kP", 0.5);
-			SmartNumber kI = new SmartNumber("PID/Turret/kI", 0.0);
+			SmartNumber kP = new SmartNumber("PID/Turret/kP", 2.5);
+			SmartNumber kI = new SmartNumber("PID/Turret/kI", 0.2);
 			SmartNumber kD = new SmartNumber("PID/Turret/kD", 0.1);
 		}
 		

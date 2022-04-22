@@ -1,8 +1,6 @@
 package com.stuypulse.robot.subsystems;
 
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
@@ -24,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Turret extends SubsystemBase {
     
-    private CANSparkMax motor;
+    private double motorSpeed;
     private Encoder encoder;
     private EncoderSim encoderSim;
     private FlywheelSim sim;
@@ -39,7 +37,7 @@ public class Turret extends SubsystemBase {
     private double encoderDistance;
 
     public Turret(Drivetrain drivetrain) {
-        this.motor = new CANSparkMax(Ports.Turret.MOTOR, MotorType.kBrushless);
+        this.motorSpeed = 0.0;
         
         this.encoder = new Encoder(Ports.Turret.LEFT, Ports.Turret.RIGHT);
 
@@ -66,13 +64,17 @@ public class Turret extends SubsystemBase {
         target = Field.HUB;
     }
 
+    private void setMotorSpeed(double speed) {
+        this.motorSpeed = speed;
+    }
+
     public void pointAt(Vector2D target) {
         this.target = target;
     }
 
     private void setPose(Angle angle) {
         Pose2d robotPose = drivetrain.getPose();
-        turretSim.setPose(new Pose2d(robotPose.getTranslation(), Rotation2d.fromDegrees(angle.toDegrees())));
+        turretSim.setPose(new Pose2d(robotPose.getTranslation(), Rotation2d.fromDegrees(angle.toDegrees() + robotPose.getRotation().getDegrees())));
     }
 
     private Angle getTargetAngle() {
@@ -90,7 +92,7 @@ public class Turret extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        sim.setInputVoltage(motor.get());
+        sim.setInputVoltage(motorSpeed);
 
         sim.update(Settings.Motion.DT);
 
@@ -104,15 +106,15 @@ public class Turret extends SubsystemBase {
     @Override
     public void periodic() {
         double error = getTargetAngle().toDegrees() - turretSim.getPose().getRotation().getDegrees();
-    
+        
         if (error < -180) {
             error += 360;
         } else if (error > 180) {
             error -= 360;
         }
 
-        motor.set(controller.update(error));
-
+        setMotorSpeed(controller.update(error));
+        
         setPose(Angle.fromDegrees(encoder.getDistance()));
     }
 
