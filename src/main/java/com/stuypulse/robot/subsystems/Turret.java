@@ -36,6 +36,8 @@ public class Turret extends SubsystemBase {
 
     private double encoderDistance;
 
+    private boolean aligning;
+
     public Turret(Drivetrain drivetrain) {
         this.motorSpeed = 0.0;
         
@@ -62,11 +64,21 @@ public class Turret extends SubsystemBase {
         this.turretSim = drivetrain.getField().getObject("turret");
 
         target = Field.HUB;
+
+        aligning = false;
     }
+
+    public void setAlign(boolean aligning) {
+        this.aligning = aligning;
+    }
+
+    // Motor and Encoder Functions
 
     private void setMotorSpeed(double speed) {
         this.motorSpeed = speed;
     }
+
+    // Angle and Position Functions
 
     public void pointAt(Vector2D target) {
         this.target = target;
@@ -90,6 +102,8 @@ public class Turret extends SubsystemBase {
         return toTarget.getAngle();
     }
 
+    // Periodic Functions
+
     @Override
     public void simulationPeriodic() {
         sim.setInputVoltage(motorSpeed);
@@ -105,8 +119,12 @@ public class Turret extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double error = getTargetAngle().toDegrees() - turretSim.getPose().getRotation().getDegrees();
-        
+        if (!aligning) {
+            return;
+        }
+
+        double error = getTargetAngle().toDegrees() - turretSim.getPose().getRotation().getDegrees();        
+
         if (error < -180) {
             error += 360;
         } else if (error > 180) {
