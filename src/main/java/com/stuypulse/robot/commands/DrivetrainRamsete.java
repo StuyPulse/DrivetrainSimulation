@@ -19,7 +19,7 @@ public class DrivetrainRamsete extends RamseteCommand {
             traj,
             drivetrain::getPose,
             new RamseteController(),
-            new DifferentialDriveKinematics(Settings.Motion.TRACK_WIDTH),
+            new DifferentialDriveKinematics(Settings.Drivetrain.TRACK_WIDTH),
             drivetrain::tankDriveKalman,
             drivetrain
         );

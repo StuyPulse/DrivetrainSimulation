@@ -67,7 +67,6 @@ public class RobotContainer {
 
     driver.getTopButton().whenPressed(new TurretPointAt(turret, Field.HUB));
     driver.getBottomButton().whenPressed(new TurretPointAt(turret, new Vector2D(0, 0)));
-    // driver.getRightButton().whileHeld(new TurretAlign(camera, turret));
   }
 
   /**************/

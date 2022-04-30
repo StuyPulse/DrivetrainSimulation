@@ -16,7 +16,6 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -32,9 +31,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-/*
-h
-*/
 
 public class Drivetrain extends SubsystemBase { 
 
@@ -60,11 +56,8 @@ public class Drivetrain extends SubsystemBase {
     private AnalogGyroSim gyroSim;
 	private DifferentialDrivetrainSim drivetrainSim;
 
-	// State space
-	private final LinearSystem<N2, N2, N2> drivetrainPlant; // The drivetrain model
-	private final KalmanFilter<N2, N2, N2> observer; // The observer fuses our encoder/gyro data and voltage inputs to reject noise.
-	private final LinearQuadraticRegulator<N2, N2, N2> controller; // A LQR uses feedback to create voltage commands.
-	private final LinearSystemLoop<N2, N2, N2> loop; // Loop that brings it all together
+	// State space control
+	private final LinearSystemLoop<N2, N2, N2> loop;
 
     public Drivetrain() {
 		// Add Motors
@@ -82,43 +75,19 @@ public class Drivetrain extends SubsystemBase {
 				new CANSparkMax(Ports.Drivetrain.RIGHT_BOTTOM, MotorType.kBrushless)
 			};
 		
-		// Create Differential Drive
+		// Create Differential Drive & Sim
 		drivetrain =
 			new DifferentialDrive(
 				new MotorControllerGroup(leftMotors),
 				new MotorControllerGroup(rightMotors));
-		
-		drivetrainPlant =
-			LinearSystemId.identifyDrivetrainSystem(
-				Settings.SysID.Drivetrain.kV, 
-				Settings.SysID.Drivetrain.kA, 
-				Settings.SysID.Drivetrain.kVAngular, 
-				Settings.SysID.Drivetrain.kAAngular
-			);
+        drivetrainSim = Settings.Drivetrain.System.MODEL;
 
-        // Create Drivetrain Sim
-        drivetrainSim = new DifferentialDrivetrainSim(
-			drivetrainPlant,
-			DCMotor.getNEO(3),
-			Settings.Motion.Encoders.GearRatio.Stages.HIGH_GEAR_STAGE,           
-			Settings.Motion.TRACK_WIDTH,                  
-			Settings.Motion.Encoders.WHEEL_RADIUS,
-
-			// Measurement noise deviation
-			VecBuilder.fill(
-				0.001, 0.001, // x/y
-				0.001,        // heading
-				Settings.Motion.MEASURE_STDEV_LEFT, Settings.Motion.MEASURE_STDEV_RIGHT,     // l/r velocity
-				0.005, 0.005  // l/r position
-			)
-		);
-		
 		// Create Encoders
 		leftEncoder = new Encoder(Ports.Grayhill.LEFT_A, Ports.Grayhill.LEFT_B); 
 		rightEncoder = new Encoder(Ports.Grayhill.RIGHT_A, Ports.Grayhill.RIGHT_B);
 
-		leftEncoder.setDistancePerPulse(Settings.Motion.Encoders.GRAYHILL_DISTANCE_PER_PULSE);
-		rightEncoder.setDistancePerPulse(Settings.Motion.Encoders.GRAYHILL_DISTANCE_PER_PULSE);
+		leftEncoder.setDistancePerPulse(Settings.Drivetrain.Encoders.GRAYHILL_DISTANCE_PER_PULSE);
+		rightEncoder.setDistancePerPulse(Settings.Drivetrain.Encoders.GRAYHILL_DISTANCE_PER_PULSE);
 		
 		leftEncoder.reset();
 		rightEncoder.reset();
@@ -127,52 +96,24 @@ public class Drivetrain extends SubsystemBase {
 		leftEncoderSim = new EncoderSim(leftEncoder);
 		rightEncoderSim = new EncoderSim(rightEncoder);
 		
-        // Create Gyro
+        // Create Gyro & Sim
         gyro = new AnalogGyro(Ports.Gyro.CHANNEL);
-
-        // Create Gyro Sim
         gyroSim = new AnalogGyroSim(gyro);
 
-		// Create Odometry
+		// Create Odometry & Visualizer
 		odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
 		field = new Field2d();
-
-		observer =
-			new KalmanFilter<>(
-				Nat.N2(),
-				Nat.N2(),
-				drivetrainPlant,
-				VecBuilder.fill(Settings.Motion.STATE_STDEV_LEFT, Settings.Motion.STATE_STDEV_RIGHT), 
-				VecBuilder.fill(Settings.Motion.MEASURE_STDEV_LEFT, Settings.Motion.MEASURE_STDEV_RIGHT), 
-				Settings.Motion.DT
-			);
-
-		controller =
-			new LinearQuadraticRegulator<>(
-				drivetrainPlant,
-				VecBuilder.fill(Settings.Motion.Q_LEFT, Settings.Motion.Q_RIGHT), 
-				VecBuilder.fill(Settings.Motion.R_LEFT, Settings.Motion.R_RIGHT), 
-				Settings.Motion.DT
-			);
-		
-		loop =
-			new LinearSystemLoop<>(
-				drivetrainPlant, 
-				controller, 
-				observer, 
-				Settings.Motion.MAX_VOLTAGE, 
-				Settings.Motion.DT
-			);
-
-        // put data on SmartDashboard
         SmartDashboard.putData("Field", field);
 
+
+        // state-space controller
+        // A LQR uses feedback to create voltage commands.
+		loop = Settings.Drivetrain.LOOPER;
 	}
 
 	public Field2d getField() {
 		return field;
 	}
-	
 
 	private double getLeftMotorSpeed() {
 		double total = 0;
@@ -215,14 +156,17 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public void tankDriveKalman(double left, double right) {
-		loop.setNextR(VecBuilder.fill(left * Settings.Motion.MAX_TELE_SPEED, right * Settings.Motion.MAX_TELE_SPEED));
+		loop.setNextR(VecBuilder.fill(left * Settings.Drivetrain.Motion.MAX_TELEOP_SPEED, right * Settings.Drivetrain.Motion.MAX_TELEOP_SPEED));
 		loop.correct(VecBuilder.fill(getLeftRate(), getRightRate()));
-		loop.predict(Settings.Motion.DT);
+		loop.predict(Settings.dT);
 
 		left = loop.getU(0);
 		right = loop.getU(1);
 
-		tankDrive(left / Settings.Motion.MAX_VOLTAGE, right / Settings.Motion.MAX_VOLTAGE);
+		tankDrive(
+            left / Settings.Drivetrain.MAX_VOLTAGE, 
+            right / Settings.Drivetrain.MAX_VOLTAGE
+        );
 	}
 
 	public void arcadeDrive(double speed, double rotation) {
@@ -271,7 +215,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Drives using curvature drive algorithm with automatic quick turn
     public void curvatureDriveKalman(double xSpeed, double zRotation) {
-        curvatureDriveKalman(xSpeed, zRotation, Settings.Motion.BASE_TURNING_SPEED);
+        curvatureDriveKalman(xSpeed, zRotation, Settings.Driver.BASE_TURN_SPEED);
     }
 
 	// Encoder functions
@@ -345,7 +289,7 @@ public class Drivetrain extends SubsystemBase {
 		drivetrainSim.setInputs(getLeftMotorSpeed() * RobotController.getInputVoltage(),
 								getRightMotorSpeed() * RobotController.getInputVoltage());
 
-		drivetrainSim.update(Settings.Motion.DT);
+		drivetrainSim.update(Settings.dT);
 
 		// update sensors
 		leftEncoderSim.setDistance(drivetrainSim.getLeftPositionMeters());

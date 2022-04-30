@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.constants.Settings.Motion;
+import com.stuypulse.robot.constants.Settings.Drivetrain.Motion;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,7 +18,7 @@ public final class TrajectoryLoader {
 
     private static final TrajectoryConfig MAX_SPEED_TRAJECTORY =
             new TrajectoryConfig(Motion.MAX_VELOCITY, Motion.MAX_ACCELERATION)
-                    .setKinematics(Settings.Motion.KINEMATICS);
+                    .setKinematics(Motion.KINEMATICS);
 
     private static final Trajectory DEFAULT_TRAJECTORY =
             TrajectoryGenerator.generateTrajectory(
@@ -26,7 +26,7 @@ public final class TrajectoryLoader {
                     List.of(),
                     new Pose2d(1, 0, new Rotation2d()),
                     new TrajectoryConfig(0.1, 0.1)
-                            .setKinematics(Settings.Motion.KINEMATICS));
+                            .setKinematics(Motion.KINEMATICS));
 
     // Function that gets a trajectory from path weaver,
     // but will give a default one if it has an issue
