@@ -5,6 +5,7 @@
 
 package com.stuypulse.robot;
 
+import com.stuypulse.robot.commands.BadAlignment;
 import com.stuypulse.robot.commands.DriveDistance;
 import com.stuypulse.robot.commands.DrivetrainAlign;
 import com.stuypulse.robot.commands.DrivetrainDrive;
@@ -62,7 +63,7 @@ public class RobotContainer {
   /***************/
 
   private void configureButtonBindings() {
-    // driver.getLeftButton().whenPressed(new DrivetrainReset(drivetrain));
+    driver.getRightButton().whileHeld(new BadAlignment(drivetrain, camera));
     driver.getLeftButton().whileHeld(new DrivetrainAlign(drivetrain, camera));
 
     driver.getTopButton().whenPressed(new TurretPointAt(turret, Field.HUB));

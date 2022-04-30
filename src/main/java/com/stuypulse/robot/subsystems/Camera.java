@@ -2,8 +2,10 @@ package com.stuypulse.robot.subsystems;
 
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.util.DelayFilter;
 import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.Vector2D;
+import com.stuypulse.stuylib.streams.filters.IFilter;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,20 +15,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 /**
- * TODO:
- *  - implement a polling istream on the camera data with the limelight delay + image processing delay
- *  - take x-angle from a point on the rim of the hub (cast a ray into a circle)
- *
+ * A simulated camera.
  */
-
 public class Camera extends SubsystemBase {
     
     private final Drivetrain drivetrain;
-    private Vector2D hub;
+    private final Vector2D hub;
+
+    private final IFilter angleMeasurement;
+    private final IFilter distanceMeasurement;
 
     public Camera(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
         this.hub = Field.HUB;
+
+        this.angleMeasurement = new DelayFilter(Settings.Camera.DELAY);
+        this.distanceMeasurement = new DelayFilter(Settings.Camera.DELAY);
 
         addGoal(drivetrain.getField());
     }
@@ -43,6 +47,7 @@ public class Camera extends SubsystemBase {
         Pose2d pose = drivetrain.getPose();
         Vector2D pos = new Vector2D(pose.getX(), pose.getY());
         Angle ang = Angle.fromDegrees(pose.getRotation().getDegrees());
+
         return ang.sub(hub.sub(pos).getAngle());
     }
 
@@ -66,7 +71,7 @@ public class Camera extends SubsystemBase {
             return Angle.kZero;
         }
 
-        return getAngleToHub();
+        return Angle.fromDegrees(angleMeasurement.get(getAngleToHub().toDegrees()));
     }
 
     public double getDistance() {
@@ -75,7 +80,7 @@ public class Camera extends SubsystemBase {
             return 0;
         }
 
-        return getRawDistance() - Units.feetToMeters(2);
+        return distanceMeasurement.get(getRawDistance());
     }
 
     /*

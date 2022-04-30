@@ -44,6 +44,13 @@ public interface Settings {
 
     double dT = 0.020;
 
+    public interface Camera {
+        int FPS = 22;
+        double PROCESSING_SPEED = 0.011;
+
+        double DELAY = (1.0 / FPS) + PROCESSING_SPEED;
+    }
+
     public interface Driver {
         double BASE_TURN_SPEED = 0.5;
     }
@@ -121,7 +128,16 @@ public interface Settings {
             int MOTORS = 3;
 
             public interface Noise {
-                // ?? 
+                double X = 0.001;
+                double Y = 0.001;
+
+                double HEADING = 0.001;
+
+                double LEFT_VELOCITY = 0.01;
+                double RIGHT_VELOCITY = 0.01;
+
+                double LEFT_POSITION = 0.005;
+                double RIGHT_POSITION = 0.005;
             }
 
             DifferentialDrivetrainSim MODEL = 
@@ -136,10 +152,10 @@ public interface Settings {
                     // These should be set, and then the kalman filters should be tuned assuming these noise
                     // values are not known
                     VecBuilder.fill(
-                        0.001, 0.001, // x/y
-                        0.001,        // heading
-                        0.01, 0.01,   // l/r velocity
-                        0.005, 0.005  // l/r position
+                        Noise.X, Noise.Y,
+                        Noise.HEADING,
+                        Noise.LEFT_VELOCITY, Noise.RIGHT_VELOCITY,   
+                        Noise.LEFT_POSITION, Noise.RIGHT_POSITION
                     )
                 );
         }
@@ -186,7 +202,7 @@ public interface Settings {
 
     public interface Turret {
 
-        double TURRET_DISTANCE_PER_PULSE = 1.0 / 24.0;
+        double TURRET_DISTANCE_PER_PULSE = 0.694;
 
         public interface System {
             double kV = 0.5;
@@ -227,9 +243,9 @@ public interface Settings {
 		}
 
 		public interface DrivetrainAlign {
-			SmartNumber kP = new SmartNumber("PID/DrivetrainAlign/kP", 0.1);
+			SmartNumber kP = new SmartNumber("PID/DrivetrainAlign/kP", 0.0085);
 			SmartNumber kI = new SmartNumber("PID/DrivetrainAlign/kI", 0.0);
-			SmartNumber kD = new SmartNumber("PID/DrivetrainAlign/kD", 0.0);
+			SmartNumber kD = new SmartNumber("PID/DrivetrainAlign/kD", 0.0020);
 		}
 
 	}
