@@ -69,13 +69,17 @@ public class Robot extends TimedRobot {
     if (auto != null) {
       auto.cancel();
     }
+
+    robot.turret.setAlign(true);
   }
 
   @Override
   public void teleopPeriodic() {}
 
   @Override
-  public void teleopExit() {}
+  public void teleopExit() {
+    robot.turret.setAlign(false);
+  }
 
   /*****************/
   /*** TEST MODE ***/

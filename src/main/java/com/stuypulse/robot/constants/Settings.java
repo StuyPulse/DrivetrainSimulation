@@ -7,13 +7,11 @@ package com.stuypulse.robot.constants;
 
 import java.nio.file.Path;
 
-import com.stuypulse.stuylib.math.Vector2D;
 import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 
 /*-
@@ -82,6 +80,8 @@ public final class Settings {
                 /** = 0.22666 */
                 double GRAYHILL_TO_WHEEL =
                         Stages.GRAYHILL_STAGE * Stages.THIRD_STAGE * Stages.EXTERNAL_STAGE;
+
+				double TURRET_GEARING = 1.0;
             }
 
             double WHEEL_DIAMETER = Units.inchesToMeters(4);
@@ -95,14 +95,24 @@ public final class Settings {
                             * GearRatio.GRAYHILL_TO_WHEEL;
 
             boolean GRAYHILL_INVERTED = true;
+
+			// idk what dpp should be
+			double TURRET_DISTANCE_PER_PULSE = 0.694;
         }
 	}
 
 	public interface SysID {
-		double kV = 1.6658;
-		double kA = 0.4515;
-		double kVAngular = 3.0;
-		double kAAngular = 1.0;
+		public interface Drivetrain {
+			double kV = 1.6658;
+			double kA = 0.4515;
+			double kVAngular = 3.0;
+			double kAAngular = 2.0;
+		}
+
+		public interface Turret {
+			double kV = 0.5;
+			double kA = 0.1;
+		}
 	}
 
 	public interface PID {
@@ -117,11 +127,22 @@ public final class Settings {
 			SmartNumber kI = new SmartNumber("PID/DrivetrainAlign/kI", 0.0);
 			SmartNumber kD = new SmartNumber("PID/DrivetrainAlign/kD", 0.0);
 		}
+
+		public interface Turret {
+			SmartNumber kP = new SmartNumber("PID/Turret/kP", 2.5);
+			SmartNumber kI = new SmartNumber("PID/Turret/kI", 0.2);
+			SmartNumber kD = new SmartNumber("PID/Turret/kD", 0.1);
+		}
 		
 	}
 
 	public interface BangBang {
 		SmartNumber SPEED = new SmartNumber("BangBang/Speed", 1.0);
+	}
+
+	public interface Turret {
+		int MAX_TURN_ANGLE = 190;
+		int MIN_TURN_ANGLE = -190;
 	}
 	
 }
