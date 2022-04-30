@@ -7,13 +7,11 @@ package com.stuypulse.robot.constants;
 
 import java.nio.file.Path;
 
-import com.stuypulse.stuylib.math.Vector2D;
 import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 
 /*-
@@ -140,6 +138,11 @@ public final class Settings {
 
 	public interface BangBang {
 		SmartNumber SPEED = new SmartNumber("BangBang/Speed", 1.0);
+	}
+
+	public interface Turret {
+		int MAX_TURN_ANGLE = 190;
+		int MIN_TURN_ANGLE = -190;
 	}
 	
 }

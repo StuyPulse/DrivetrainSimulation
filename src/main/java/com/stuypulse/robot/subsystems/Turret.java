@@ -123,12 +123,18 @@ public class Turret extends SubsystemBase {
             return;
         }
 
-        double error = getTargetAngle().toDegrees() - turretSim.getPose().getRotation().getDegrees();        
+        Angle toTarget = getTargetAngle();
+        Angle turretFacing = Angle.fromDegrees(turretSim.getPose().getRotation().getDegrees());
 
-        if (error < -180) {
-            error += 360;
-        } else if (error > 180) {
-            error -= 360;
+        double error = toTarget.sub(turretFacing).toDegrees();
+
+        double projectedMotorDist = error + encoder.getDistance();
+
+        // if motor is going to overrun
+        if (projectedMotorDist > Settings.Turret.MAX_TURN_ANGLE || projectedMotorDist < Settings.Turret.MIN_TURN_ANGLE) {
+            // invert angle
+            // ex. -135 -> 225, 10 -> -350
+            error = Math.signum(-error) * (360 - Math.abs(error));
         }
 
         setMotorSpeed(controller.update(error));
