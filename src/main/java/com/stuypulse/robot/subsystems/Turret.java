@@ -4,6 +4,7 @@ package com.stuypulse.robot.subsystems;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.util.NoMotor;
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.Vector2D;
@@ -16,9 +17,10 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+
 public class Turret extends SubsystemBase {
-    
-    private double motorSpeed;
+
+    private NoMotor motor;
     private Encoder encoder;
     private EncoderSim encoderSim;
     private FlywheelSim sim;
@@ -35,7 +37,7 @@ public class Turret extends SubsystemBase {
     private boolean aligning;
 
     public Turret(Drivetrain drivetrain) {
-        this.motorSpeed = 0.0;
+        this.motor = new NoMotor();
         
         this.encoder = new Encoder(Ports.Turret.LEFT, Ports.Turret.RIGHT);
 
@@ -57,12 +59,6 @@ public class Turret extends SubsystemBase {
 
     public void setAlign(boolean aligning) {
         this.aligning = aligning;
-    }
-
-    // Motor and Encoder Functions
-
-    private void setMotorSpeed(double speed) {
-        this.motorSpeed = speed;
     }
 
     // Angle and Position Functions
@@ -97,7 +93,7 @@ public class Turret extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        sim.setInputVoltage(motorSpeed);
+        sim.setInputVoltage(motor.get());
 
         sim.update(Settings.dT);
 
@@ -138,7 +134,7 @@ public class Turret extends SubsystemBase {
 
         error = projectedMotorDist - encoder.getDistance();
 
-        setMotorSpeed(controller.update(error));
+        motor.set(controller.update(error));
         
         setPose(Angle.fromDegrees(encoder.getDistance()));
     }

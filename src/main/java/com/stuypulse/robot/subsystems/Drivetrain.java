@@ -2,6 +2,7 @@ package com.stuypulse.robot.subsystems;
 
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.util.NoMotor;
 import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.SLMath;
 
@@ -22,9 +23,6 @@ import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 
 public class Drivetrain extends SubsystemBase { 
 
@@ -35,8 +33,8 @@ public class Drivetrain extends SubsystemBase {
 	private final AnalogGyro gyro;
 	
 	// Motors
-    private final CANSparkMax[] leftMotors;
-    private final CANSparkMax[] rightMotors;
+    private final NoMotor[] leftMotors;
+    private final NoMotor[] rightMotors;
 
 	// Odometry
 	private final DifferentialDriveOdometry odometry;
@@ -56,17 +54,17 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain() {
 		// Add Motors
 		leftMotors =
-			new CANSparkMax[] {
-				new CANSparkMax(Ports.Drivetrain.LEFT_TOP, MotorType.kBrushless),
-				new CANSparkMax(Ports.Drivetrain.LEFT_MIDDLE, MotorType.kBrushless),
-				new CANSparkMax(Ports.Drivetrain.LEFT_BOTTOM, MotorType.kBrushless)
+			new NoMotor[] {
+				new NoMotor(),
+				new NoMotor(),
+				new NoMotor()
 			};
 
 		rightMotors =
-			new CANSparkMax[] {
-				new CANSparkMax(Ports.Drivetrain.RIGHT_TOP, MotorType.kBrushless),
-				new CANSparkMax(Ports.Drivetrain.RIGHT_MIDDLE, MotorType.kBrushless),
-				new CANSparkMax(Ports.Drivetrain.RIGHT_BOTTOM, MotorType.kBrushless)
+			new NoMotor[] {
+				new NoMotor(),
+				new NoMotor(),
+				new NoMotor()
 			};
 		
 		// Create Differential Drive & Sim
@@ -112,7 +110,7 @@ public class Drivetrain extends SubsystemBase {
 	private double getLeftMotorSpeed() {
 		double total = 0;
 
-		for (CANSparkMax m : leftMotors) {
+		for (NoMotor m : leftMotors) {
 			total += m.get();
 		}
 
@@ -122,7 +120,7 @@ public class Drivetrain extends SubsystemBase {
     private double getRightMotorSpeed() {
 		double total = 0;
 
-		for (CANSparkMax m : rightMotors) {
+		for (NoMotor m : rightMotors) {
             total += m.get();
 		}
         
